@@ -1,0 +1,12 @@
+﻿@model StudentAttendance.Models.UserInformation
+
+@{ 
+    ViewBag.Title = "Home Page";
+}
+
+<h2>Attendance Sign In</h2>
+@using (Html.BeginForm("Updated", "Home", FormMethod.Post))
+{
+    @Html.TextBoxFor(x => x.studentID)
+    <input type="submit" value="Sign In" />
+}
