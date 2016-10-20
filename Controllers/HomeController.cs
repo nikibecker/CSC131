@@ -1,4 +1,4 @@
-﻿using Google.Apis.Auth.OAuth2;
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
 using Google.Apis.Services;
@@ -14,6 +14,7 @@ using System.Web;
 using System.Web.Mvc;
 using StudentAttendance.Models;
 using System.Diagnostics;
+using System.Net;
 
 namespace StudentAttendance.Controllers
 {
@@ -36,6 +37,19 @@ namespace StudentAttendance.Controllers
         // Startup method
         public ActionResult Index()
         {
+            /****** Gets IP Address and puts into string localIP. 'Debug.WriteLine' displays it while in debug mode. ******/
+            IPHostEntry host;
+            string localIP = "?";
+            host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (IPAddress ip in host.AddressList)
+            {
+                if (ip.AddressFamily.ToString() == "InterNetwork")
+                {
+                    localIP = ip.ToString();
+                    Debug.WriteLine(localIP);
+                }
+            }
+            /*************************************************************************/
             ViewBag.Key = professorKey; // Assign key to ViewBag object and pass to the view (Index.cshtml)
             /***This shows student what key is. Temporary placement since clearly we don't want just anyone knowing what the key is. Just for testing purposes***/
             return View();
