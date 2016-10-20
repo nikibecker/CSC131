@@ -1,2 +1,3 @@
 "# CSC131" 
-Cleaned up the /Controllers & /Models folders. No time to clean up /Views but only worry about /Views/Index.cshtml, /Views/Error.cshtml, /Views/Updated.cshtml
+
+Update: Project prompts user for student ID and unique key. Sheets updates only when ID and Key are authenticated.
