@@ -1,0 +1,89 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+    background-color:#1E2B26;
+}
+
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+    margin: auto; 
+    text-align:left; 
+    background-color: #171B19;
+    padding: 20px 20px 20px 20px;  
+    color: #D3D3D3;
+    border-radius: 12px;
+}
+
+.body-inner {
+    width:500px; 
+    margin: auto; 
+    text-align:left;
+    padding: 4px 4px 4px 4px;  
+    border-radius: 12px;
+}
+
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+h2 {
+    text-align:center;
+   color: #3A584C;
+}
+
+
+a:link {
+    color: #808080;
+}
+
+/* visited link */
+a:visited {
+    color: #3A584C;
+}
+
+/* mouse over link */
+a:hover {
+    color: #3A584C;
+}
+
+/* selected link */
+a:active {
+    color: #3A584C;
+}
+
+p {
+    color: #808080;
+    text-align:left;
+}
+
+text {
+    color: #D3D3D3;
+}
+
+footer {
+    color: #2D3C36;
+}
+
+input[type=text] {
+    align-items:left;
+    background-color: black;
+    color: #D3D3D3;
+    border-radius: 4px;
+    border-color: #0a0c0b;
+    border-style:hidden;
+    padding: 2px;
+}
+
+input[type=submit] {
+    background-color: #1E2B26;
+    color: black;
+    border-radius: 8px;
+    border-style: hidden;
+}
+
+textarea {
+    max-width: 280px;
+}
+
+select
