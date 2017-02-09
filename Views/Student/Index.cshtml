@@ -1,0 +1,29 @@
+﻿@model StudentAttendance.Models.AttendanceViewModel
+
+@{
+    ViewBag.Title = "Home Page";
+}
+<head>
+    <title>@ViewBag.Title</title>
+</head>
+<div class="body-inner">
+    <h2>Student Attendance Log-In</h2>
+    <p>Please enter in your student ID and the code provided by your professor.</p>
+    <br />
+    <text style="text-align:center">
+        @using (Html.BeginForm("Updated", "Home", FormMethod.Post))
+        {
+            @Html.TextBoxFor(x => x.studentID, new { placeholder = "Student ID" })
+            <br />
+            <br />
+            @Html.TextBoxFor(y => y.userKey, new { placeholder = "Login Key" })
+            <br />
+            <br />
+            <input type="submit" value="Sign In" />
+        }
+    </text>
+    @using (Html.BeginForm("ClassRegister", "Student", FormMethod.Post))
+    {
+        <input type="submit" value="Register For Class" />
+    }
+</div>

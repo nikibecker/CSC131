@@ -1,0 +1,10 @@
+﻿
+@model StudentAttendance.Models.CreateClassViewModel
+
+@using (Html.BeginForm("CreateClass", "Professor", FormMethod.Post))
+{
+    @Html.TextBoxFor(x => x.basedGodClassID, new { placeholder = "Course ID" })
+    <br />
+    @Html.TextBoxFor(y => y.basedGodSectionNum, new { placeholder = "Section Number" })
+    <input type="submit" value="Create Class" />
+}

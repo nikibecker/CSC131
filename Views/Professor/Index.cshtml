@@ -1,0 +1,52 @@
+﻿
+@{
+    ViewBag.Title = "Professor";
+}
+
+<script>
+    var time;
+    function myTimer() {
+        clearTimeout(time);
+        $.ajax({
+            type: 'GET',
+            url: '/Professor/GenerateKey',
+            dataType: 'html',
+            success: function (data) {
+                $('#partial').html(data);
+            },
+            error: function () {
+                alert("Could not refresh key. Check connection.");
+            }
+        })
+        time = setTimeout(myTimer, 5000);
+    }
+
+    function stop() {
+        clearInterval(time);
+    }
+
+    function createClass() {
+        clearInterval(time);
+        $.ajax({
+            type: 'GET',
+            url: '/Professor/CreateClassForm',
+            dataType: 'html',
+            success: function (data) {
+                $('#partial').html(data);
+            },
+            error: function () {
+                alert("Connection Error.");
+            }
+        })
+    }
+</script>
+
+<h2 style="text-align:center">Welcome, Professor</h2>
+
+<ul>
+    <li><input style="align-items:center" onclick="myTimer()" type="submit" value="Generate Key" /></li>
+    <li><input style="align-items:center" onclick="stop()" type="submit" value="Stop Key" /></li>
+    <li><input style="align-items:center" onclick="createClass()" type="submit" value="Create Class" /></li>
+</ul>
+
+<div id="partial"></div>

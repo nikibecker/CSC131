@@ -1,21 +1,37 @@
+﻿
+@{
+    ViewBag.Title = "Error";
+}
+
+<h2>Error</h2>
+
 @model StudentAttendance.Models.AttendanceViewModel
 
-@{ 
+@{
     ViewBag.Title = "Error Page";
 }
 <head>
     <title>@ViewBag.Title</title>
 </head>
-<h2>Attendance Sign In</h2>
-<p>Professor's Key: @ViewBag.Key</p>
-<p style="color:red">Error: @TempData["Message"]</p>
-@using (Html.BeginForm("Updated", "Home", FormMethod.Post))
-{
-    @Html.TextBoxFor(x => x.studentID, new { placeholder = "Student ID" })
-    <br />
-    <br />
-    @Html.TextBoxFor(y => y.userKey, new { placeholder = "Login Key" })
-    <br />
-    <br />
-    <input type="submit" value="Sign In" />
-}
+<div class="body-inner">
+    <h2>Student Attendance Log-In</h2>
+    <p>
+        <strong>
+            There was an error when processing your attendance log. <br />
+            Please check your information and try again.<br />
+            If this issue continues, please inform your instructor or contact an administrator.
+        </strong>
+    </p>
+    <p>Please enter in your student ID and the code provided by your professor.</p>
+    <p style="color:red">Error: @TempData["Message"]</p>
+    @using (Html.BeginForm("Updated", "Home", FormMethod.Post))
+    {
+        @Html.TextBoxFor(x => x.studentID, new { placeholder = "Student ID" })
+        <br />
+        <br />
+        @Html.TextBoxFor(y => y.userKey, new { placeholder = "Login Key" })
+        <br />
+        <br />
+        <input type="submit" value="Sign In" />
+    }
+</div>

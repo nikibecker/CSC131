@@ -1,21 +1,9 @@
-@model StudentAttendance.Models.AttendanceViewModel
+﻿@model StudentAttendance.Models.AttendanceViewModel
 
-@{ 
+@{
     ViewBag.Title = "Home Page";
 }
 <head>
     <title>@ViewBag.Title</title>
 </head>
-<h2>Attendance Sign In</h2>
-<p>Professor's Key: @ViewBag.Key</p>
-<br />
-@using (Html.BeginForm("Updated", "Home", FormMethod.Post))
-{
-    @Html.TextBoxFor(x => x.studentID, new { placeholder = "Student ID" })
-    <br />
-    <br />
-    @Html.TextBoxFor(y => y.userKey, new { placeholder = "Login Key" })
-    <br />
-    <br />
-    <input type="submit" value="Sign In" />
-}
+<h2 style="text-align:center">Welcome to Attendance Tracker</h2>
