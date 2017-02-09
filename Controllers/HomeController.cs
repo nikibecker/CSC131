@@ -1,4 +1,4 @@
-using Google.Apis.Auth.OAuth2;
+﻿using Google.Apis.Auth.OAuth2;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
 using Google.Apis.Services;
@@ -14,20 +14,19 @@ using System.Web;
 using System.Web.Mvc;
 using StudentAttendance.Models;
 using System.Diagnostics;
-using System.Net;
 
 namespace StudentAttendance.Controllers
 {
     public class HomeController : Controller
     {
         static string[] Scopes = { SheetsService.Scope.Spreadsheets };
-        static string ApplicationName = "Google Sheets API .NET Quickstart";
+        static string ApplicationName = "Attendance Tracker";
         StringBuilder signInCell = new StringBuilder(); // Cell to sign in user
-        String day = DateTime.Today.ToString("d"); // Gets today's date
+        String day = DateTime.Today.ToString("M/d/yyyy"); // Gets today's date
         // Find the date column and put into 'dateColPosition' to append to 'signInCell'
         string[] dateColPosition = new string[] { "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
         // Generate unique 5 digit key needed for login
-        public static int professorKey = new Random().Next(10000, 99999);
+        static ProfessorViewModel prof;
         public String spreadsheetId = "14-UKYNismFO3QP9H20eMbkvumnzwnApoC9vu2VnMjTQ"; // Spreadsheet ID
         String stdntIDCol = "D2:D40"; // Column 'D' of Student IDs
         String dateRow = "F1:Z1"; // Row 1 of dates
@@ -37,21 +36,29 @@ namespace StudentAttendance.Controllers
         // Startup method
         public ActionResult Index()
         {
-            /****** Gets IP Address and puts into string localIP. 'Debug.WriteLine' displays it while in debug mode. ******/
-            IPHostEntry host;
-            string localIP = "?";
-            host = Dns.GetHostEntry(Dns.GetHostName());
-            foreach (IPAddress ip in host.AddressList)
+            if (User.Identity.IsAuthenticated)
             {
-                if (ip.AddressFamily.ToString() == "InterNetwork")
-                {
-                    localIP = ip.ToString();
-                    Debug.WriteLine(localIP);
-                }
+                if (User.IsInRole("Admin"))
+                    return RedirectToAction("Index", "Admin");
+                else if (User.IsInRole("Professor"))
+                    return RedirectToAction("Index", "Professor");
+                else
+                    return RedirectToAction("Index", "Student");
             }
-            /*************************************************************************/
-            ViewBag.Key = professorKey; // Assign key to ViewBag object and pass to the view (Index.cshtml)
-            /***This shows student what key is. Temporary placement since clearly we don't want just anyone knowing what the key is. Just for testing purposes***/
+            return View();
+        }
+
+        //
+        // GET: /About/
+        public ActionResult About()
+        {
+            return View();
+        }
+
+        //
+        // GET: /Contact/
+        public ActionResult Contact()
+        {
             return View();
         }
 
@@ -85,7 +92,7 @@ namespace StudentAttendance.Controllers
                 ApplicationName = ApplicationName,
             });
             /***********************************/
-
+            
             // A GET request for list of student IDs
             SpreadsheetsResource.ValuesResource.GetRequest request =
                     service.Spreadsheets.Values.Get(spreadsheetId, stdntIDCol);
@@ -101,42 +108,49 @@ namespace StudentAttendance.Controllers
 
             signInCell.Append(searchDate(dates)); // Append column letter based on today's date (E for not found)
             signInCell.Append(searchStdntID(stdIDs, ui)); // Append row number based on student ID match (0 for not found)
-
-            if (signInCell.ToString()[0] != 'E') // If date found, continue
+            prof = ProfessorController.profObj;
+            if (prof != null) // If key is generated, continue
             {
-                if (signInCell.ToString()[1] != '0') // If student ID found, continue
+                if (signInCell.ToString()[0] != 'E') // If date found, continue
                 {
-                    if (ui.userKey == professorKey) // If user entered correct key, continue
+                    if (signInCell.ToString()[1] != '0') // If student ID found, continue
                     {
-                        ValueRange valueRange = new ValueRange(); // ValueRange object to update cells
-                        // valueRange.MajorDimension = "COLUMNS";          //"ROWS";//"COLUMNS";// May use later
-                        var oblist = new List<object>() { "Y" }; // Add 'Y' to list
-                        valueRange.Values = new List<IList<object>> { oblist }; // Add list of list to ValueRange object
-                        // Prepare to update spreadsheet with valueRange
-                        SpreadsheetsResource.ValuesResource.UpdateRequest update = service.Spreadsheets.Values.Update(valueRange, spreadsheetId, signInCell.ToString());
-                        // ??
-                        update.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.RAW;
-                        update.Execute(); // Execute request to update
-                        return View(); // Return 'Updated' view
+                        if (ui.userKey == prof.uniqueKey) // If user entered correct key, continue
+                        {
+                            ValueRange valueRange = new ValueRange(); // ValueRange object to update cells
+                                                                      // valueRange.MajorDimension = "COLUMNS";          //"ROWS";//"COLUMNS";// May use later
+                            var oblist = new List<object>() { "Y" }; // Add 'Y' to list
+                            valueRange.Values = new List<IList<object>> { oblist }; // Add list of list to ValueRange object
+                                                                                    // Prepare to update spreadsheet with valueRange
+                            SpreadsheetsResource.ValuesResource.UpdateRequest update = service.Spreadsheets.Values.Update(valueRange, spreadsheetId, signInCell.ToString());
+                            update.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.RAW;
+                            update.Execute(); // Execute request to update
+                            return View(); // Return 'Updated' view
+                        }
+                        else
+                        {
+                            // Send error message to view
+                            TempData["Message"] = "Incorrect key.";
+                            return RedirectToAction("Error");
+                        }
                     }
                     else
                     {
                         // Send error message to view
-                        TempData["Message"] = "Incorrect key.";
+                        TempData["Message"] = "Student ID not found.";
                         return RedirectToAction("Error");
                     }
                 }
                 else
                 {
                     // Send error message to view
-                    TempData["Message"] = "Student ID not found.";
+                    TempData["Message"] = "Cannot find date.";
                     return RedirectToAction("Error");
                 }
             }
             else
             {
-                // Send error message to view
-                TempData["Message"] = "Cannot find date.";
+                TempData["Message"] = "Professor has not generated key yet.";
                 return RedirectToAction("Error");
             }
         }
@@ -144,7 +158,6 @@ namespace StudentAttendance.Controllers
         // Render 'Error' view if date, student ID, or key is incorrect
         public ActionResult Error()
         {
-            ViewBag.Key = professorKey; // Again, pass key to view for testing purposes
             return View();
         }
 

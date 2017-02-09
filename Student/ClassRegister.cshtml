@@ -1,0 +1,23 @@
+﻿@model StudentAttendance.Models.ClassRegisterViewModel
+
+@{
+    ViewBag.Title = "ClassRegister";
+}
+
+<div id="added"></div>
+
+<h2 style="text-align:center">Class Register</h2>
+@using (Ajax.BeginForm("AddStudent", "Professor", FormMethod.Post, new AjaxOptions()
+{
+    UpdateTargetId = "added"
+}))
+{
+    @Html.TextBoxFor(s => s.fname, new { placeholder = "First Name" });
+    <br />
+    @Html.TextBoxFor(s => s.lname, new { placeholder = "Last Name" });
+    <br />
+    @Html.TextBoxFor(s => s.sid, new { placeholder = "Student ID" });
+    <br />
+    @Html.DropDownListFor(s => s.sheet, new SelectList(Model.classes))
+    <input type="submit" value="Register" />
+}
